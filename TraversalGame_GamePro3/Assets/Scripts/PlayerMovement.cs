@@ -11,80 +11,35 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public SpriteRenderer SR;
-    public static PlayerMovement Player;
+    public Animator noMoreJumpAnim;
+    //public static PlayerMovement Player;
 
     public Rigidbody2D RB;
     public float Speed = 5;
-    //public ProjectileController BulletPrefab;
+    public float jumpForce = 10;
+
+    public Vector2 boxSize;
+    public float castDistance;
+    public LayerMask groundLayer;
 
 
-    public CliffController CurrentCliff;
-
-    public bool Climbing;
-
+    public float numberOfJumps = 3;
+    private float jumps;
 
     private void Awake()
     {
-        //The one thing I do that's a little fancy is
-        //I record the player to a static variable
-        //so they're easy to find
-        Player = this;
-        //SR = GetComponent<SpriteRenderer>();
+        noMoreJumpAnim.enabled = false;
+        //Player = this;
+        jumps = numberOfJumps;
     }
-
 
     void Update()
     {
-        if (Climbing)
-        {
-            //ClimbMove();
-        }
-        else
-        {
-            NormalMove();
-        }
-        if (Climbing && CurrentCliff == null)
-        {
-            SetClimbing(false);
-        }
-
-
+        NormalMove();
     }
-
-
-    public void SetClimbing(bool value)
-    {
-        if (value == Climbing) return;
-        Climbing = value;
-        if (Climbing)
-        {
-            SR.color = Color.yellow;
-            AttachTo(CurrentCliff);
-            RB.gravityScale = 0;
-        }
-        else
-        {
-            SR.color = Color.white;
-            transform.parent = null;
-            RB.gravityScale = 1;
-        }
-    }
-
-
-    public void AttachTo(CliffController cliff)
-    {
-        CurrentCliff = cliff;
-        transform.parent = cliff.transform;
-        Vector3 pos = transform.position;
-        pos.y = cliff.transform.position.y;
-        transform.position = pos;
-    }
-
 
     public void NormalMove()
     {
-        //You've seen this movement code before
         Vector2 vel = RB.velocity;
         if (Input.GetKey(KeyCode.D))
             vel.x = Speed;
@@ -94,46 +49,40 @@ public class PlayerMovement : MonoBehaviour
         {
             vel.x = 0;
         }
-        if (Input.GetKeyDown(KeyCode.W))
-            vel.y = Speed; RB.velocity = vel;
-        if (Input.GetKeyDown(KeyCode.Space) && CurrentCliff != null)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && jumps > 0)
         {
-            SetClimbing(true);
+            jumps--;
+            //vel.y = Speed;
+            vel.y = jumpForce;
+            RB.velocity = vel;
+            if(jumps <= 0)
+            {
+                noMoreJumpAnim.enabled = true;
+                noMoreJumpAnim.Play("noMoreJumps");
+                //RB.gravityScale = 1;
+            }
+        }
+        if (isGrounded())
+        {
+            jumps = numberOfJumps - 1;
         }
     }
-
-
-    /*public void ClimbMove()
+    public bool isGrounded()
     {
-        Vector2 vel = Vector2.zero;
-        if (Input.GetKey(KeyCode.D))
-            vel.x = Speed;
-        else if (Input.GetKey(KeyCode.A))
-            vel.x = -Speed;
-        else
+        if (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
         {
-            vel.x = 0;
+            return true;
         }
-        RB.velocity = vel;
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SetClimbing(false);
+        else 
+        {  
+            return false; 
         }
-        if (Input.GetKeyDown(KeyCode.W) && CurrentCliff.AboveMe != null)
-        {
 
-            if (transform.position.x > CurrentCliff.AboveMe.Coll.bounds.min.x &&
-               transform.position.x < CurrentCliff.AboveMe.Coll.bounds.max.x)
-                AttachTo(CurrentCliff.AboveMe);
-        }
-        if (Input.GetKeyDown(KeyCode.S) && CurrentCliff.BelowMe != null)
-        {
-            if (transform.position.x > CurrentCliff.BelowMe.Coll.bounds.min.x &&
-               transform.position.x < CurrentCliff.BelowMe.Coll.bounds.max.x)
-                AttachTo(CurrentCliff.BelowMe);
-        }
-    }*/
-
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -143,20 +92,15 @@ public class PlayerMovement : MonoBehaviour
             //Win the game!
             SceneManager.LoadScene("You Win");
         }
-
-        if (other.gameObject.CompareTag("Cliff"))
-        {
-            CurrentCliff = other.gameObject.GetComponent<CliffController>();
-        }
     }
 
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Cliff") && CurrentCliff == other.gameObject.GetComponent<CliffController>())
+        /*if (other.gameObject.CompareTag("Cliff") && CurrentCliff == other.gameObject.GetComponent<CliffController>())
         {
             CurrentCliff = null;
-        }
+        }*/
     }
 
 
