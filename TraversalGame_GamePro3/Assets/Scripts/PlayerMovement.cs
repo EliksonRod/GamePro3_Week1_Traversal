@@ -6,15 +6,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
-//Double jump, Wall jump
-
 public class PlayerMovement : MonoBehaviour
 {
     public Animator noMoreJumpAnim;
-    //public static PlayerMovement Player;
-
     public Rigidbody2D RB;
+
     public float Speed = 5;
     public float jumpForce = 10;
 
@@ -22,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     public float castDistance;
     public LayerMask groundLayer;
 
+    Vector2 movement;
 
     public float numberOfJumps = 3;
     private float jumps;
@@ -29,46 +26,44 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         noMoreJumpAnim.enabled = false;
-        //Player = this;
+        RB = GetComponent<Rigidbody2D>();
         jumps = numberOfJumps;
     }
 
     void Update()
     {
-        NormalMove();
+        playerMovement();
     }
 
-    public void NormalMove()
+    private void playerMovement()
     {
-        Vector2 vel = RB.velocity;
-        if (Input.GetKey(KeyCode.D))
-            vel.x = Speed;
-        else if (Input.GetKey(KeyCode.A))
-            vel.x = -Speed;
-        else
-        {
-            vel.x = 0;
-        }
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && jumps > 0)
+        //Horizontal Movement
+        RB.velocity = new Vector2(Input.GetAxis("Horizontal") * Speed, RB.velocity.y);
+
+        //Jumping
+        if (Input.GetKeyDown(KeyCode.Space) && jumps > 0)
         {
             jumps--;
-            //vel.y = Speed;
-            vel.y = jumpForce;
-            RB.velocity = vel;
-            if(jumps <= 0)
+            RB.velocity = new Vector2(RB.velocity.x, Speed);
+
+            //Play animation when out of jumps
+            if (jumps <= 0)
             {
                 noMoreJumpAnim.enabled = true;
                 noMoreJumpAnim.Play("noMoreJumps");
-                //RB.gravityScale = 1;
             }
         }
+
+        //Replenish jumps when on ground 
         if (isGrounded())
         {
             jumps = numberOfJumps - 1;
+            Debug.Log("On ground");
         }
     }
     public bool isGrounded()
     {
+        //Boxcast for detecting when player is on ground
         if (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
         {
             return true;
@@ -77,8 +72,8 @@ public class PlayerMovement : MonoBehaviour
         {  
             return false; 
         }
-
     }
+    //Makes BoxCast in Unity Editor visible
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
@@ -94,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     private void OnTriggerExit2D(Collider2D other)
     {
         /*if (other.gameObject.CompareTag("Cliff") && CurrentCliff == other.gameObject.GetComponent<CliffController>())
@@ -102,7 +96,6 @@ public class PlayerMovement : MonoBehaviour
             CurrentCliff = null;
         }*/
     }
-
 
     private void OnCollisionEnter2D(Collision2D other)
     {
