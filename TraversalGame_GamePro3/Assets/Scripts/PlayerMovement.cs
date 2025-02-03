@@ -38,13 +38,13 @@ public class PlayerMovement : MonoBehaviour
     private void playerMovement()
     {
         //Horizontal Movement
-        RB.velocity = new Vector2(Input.GetAxis("Horizontal") * Speed, RB.velocity.y);
+        RB.linearVelocity = new Vector2(Input.GetAxis("Horizontal") * Speed, RB.linearVelocity.y);
 
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && jumps > 0)
         {
             jumps--;
-            RB.velocity = new Vector2(RB.velocity.x, Speed);
+            RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpForce);
 
             //Play animation when out of jumps
             if (jumps <= 0)
