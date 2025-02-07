@@ -20,14 +20,17 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 movement;
 
-    public float numberOfJumps = 3;
+    public float numberOfJumps;
     private float jumps;
+    int buildIndex;
 
     private void Awake()
     {
         noMoreJumpAnim.enabled = false;
-        RB = GetComponent<Rigidbody2D>();
         jumps = numberOfJumps;
+
+        RB = GetComponent<Rigidbody2D>();
+        buildIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     void Update()
@@ -47,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
             RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpForce);
 
             //Play animation when out of jumps
-            if (jumps <= 0)
+            if (jumps <= 0 && !isGrounded())
             {
                 noMoreJumpAnim.enabled = true;
                 noMoreJumpAnim.Play("noMoreJumps");
@@ -58,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded())
         {
             jumps = numberOfJumps - 1;
-            Debug.Log("On ground");
         }
     }
     public bool isGrounded()
@@ -79,31 +81,22 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collider2D)
     {
-        //If I walk into the exit. . .
-        if (other.gameObject.CompareTag("Exit"))
+        if (collider2D.gameObject.tag == "Exit")
         {
-            //Win the game!
-            SceneManager.LoadScene("You Win");
+            SceneManager.LoadScene(buildIndex + 1);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D collision2D)
     {
-        /*if (other.gameObject.CompareTag("Cliff") && CurrentCliff == other.gameObject.GetComponent<CliffController>())
+        if (collision2D.gameObject.tag == "Hazard")
         {
-            CurrentCliff = null;
-        }*/
-    }
+            Destroy(gameObject);
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        //If I walk into a monster or other hazard. . .
-        if (other.gameObject.CompareTag("Hazard"))
-        {
-            //Lose the game!
-            SceneManager.LoadScene("You Lose");
+            //Reloads Current Scene
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

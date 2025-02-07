@@ -13,6 +13,10 @@ public class ButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         SceneManager.LoadScene(1);
     }
+    public void BackToMenu(string targetScene)
+    {
+        SceneManager.LoadScene(targetScene);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         buttonEffect.SetActive(true);
