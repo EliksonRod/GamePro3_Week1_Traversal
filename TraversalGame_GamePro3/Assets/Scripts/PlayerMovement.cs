@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviour
         //Replenish jumps when on ground 
         if (isGrounded())
         {
+            //Offset with - 1 because the boxcast will detect still on ground sometime after jumping
             jumps = numberOfJumps - 1;
         }
     }
@@ -75,9 +76,10 @@ public class PlayerMovement : MonoBehaviour
             return false; 
         }
     }
-    //Makes BoxCast in Unity Editor visible
+    
     private void OnDrawGizmos()
     {
+        //Makes BoxCast visible in Unity Editor
         Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
     }
 
@@ -85,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collider2D.gameObject.tag == "Exit")
         {
+            //Loads next scene in buildIndex
             SceneManager.LoadScene(buildIndex + 1);
         }
     }
