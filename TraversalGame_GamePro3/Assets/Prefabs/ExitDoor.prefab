@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3016771490172917981
+--- !u!1 &8496256018463822124
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7719682787343838204}
-  - component: {fileID: 7676244107833597029}
-  - component: {fileID: 2111050216457416930}
-  - component: {fileID: 9176198434779194401}
-  - component: {fileID: 2246319270400378846}
-  - component: {fileID: 2922427349870003820}
+  - component: {fileID: 6537349543701866319}
+  - component: {fileID: 4552289765428022100}
+  - component: {fileID: 4536449914403585703}
+  - component: {fileID: 2436198345360724858}
   m_Layer: 0
-  m_Name: Player
-  m_TagString: Player
+  m_Name: ExitDoor
+  m_TagString: Exit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7719682787343838204
+--- !u!4 &6537349543701866319
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
+  m_GameObject: {fileID: 8496256018463822124}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.78, y: -17.6, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 59.47, y: -19.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7676244107833597029
+--- !u!212 &4552289765428022100
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
+  m_GameObject: {fileID: 8496256018463822124}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -79,88 +77,29 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5018867, g: 0.5018867, b: 0.5018867, a: 1}
+  m_SortingOrder: -2
+  m_Sprite: {fileID: 21300000, guid: ab32763ba15aae54b89b8b958c0d4d3f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 2.32, y: 2.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &2111050216457416930
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 2.3
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
---- !u!114 &9176198434779194401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 195149121e6a6574084efded9edec81c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noMoreJumpAnim: {fileID: 2922427349870003820}
-  currentSpeed: 0
-  jumpForce: 12
-  normalSpeed: 8.2
-  fastSpeed: 11.25
-  boxSize: {x: 0.95, y: 0.1}
-  castDistance: 0.49
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  numberOfJumps: 2
-  jumpKey: 32
-  dashKey: 304
-  dashForce: 40
-  dashDuration: 0.145
-  dashCooldown: 0.85
-  maxDashesPerJump: 1
-  dragDuringDash: 10
-  canDash: 1
-  playerState: 0
---- !u!61 &2246319270400378846
+--- !u!61 &4536449914403585703
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
+  m_GameObject: {fileID: 8496256018463822124}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 6584079c9ead91148baddccdb5e7064c, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -180,7 +119,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -188,33 +127,28 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 2}
+    oldSize: {x: 2.32, y: 2.3}
+    newSize: {x: 2.32, y: 2.3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.35, y: 2.22}
   m_EdgeRadius: 0
---- !u!95 &2922427349870003820
-Animator:
-  serializedVersion: 7
+--- !u!114 &2436198345360724858
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3016771490172917981}
+  m_GameObject: {fileID: 8496256018463822124}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4bb206e6f27f1a34ca5ac27d8f2f160b, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48c4e6ccc3ef32459bd39c7127636bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPelletsInLevel: 1
+  pelletsGathered: 0
+  Door: {fileID: 4552289765428022100}
+  Closed_Door: {fileID: 21300000, guid: ab32763ba15aae54b89b8b958c0d4d3f, type: 3}
+  Opened_Door: {fileID: 21300000, guid: 49e6f455cfaca764a8d2e2f5d40c1a65, type: 3}

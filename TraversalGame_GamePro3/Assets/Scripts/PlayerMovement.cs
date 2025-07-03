@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -9,10 +10,13 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     public Animator noMoreJumpAnim;
-    public Rigidbody2D RB;
+    Rigidbody2D rb;
 
-    public float Speed = 5;
+    public float currentSpeed;
     public float jumpForce = 10;
+    [SerializeField]float normalSpeed = 8.2f;
+    [SerializeField]float fastSpeed = 11.5f;
+    bool isInvincible = false;
 
     public Vector2 boxSize;
     public float castDistance;
@@ -24,30 +28,90 @@ public class PlayerMovement : MonoBehaviour
     private float jumps;
     int buildIndex;
 
+    [Header("Direction")]
+    private float movementInput;
+    private bool facingRight = true;
+
+    [Header("KeyBinds")]
+    public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode dashKey = KeyCode.LeftShift;
+
+    [Header("Dash Settings")]
+    public float dashForce = 70f;
+    public float dashDuration = 0.2f;
+    public float dashCooldown = 1f;
+    public int maxDashesPerJump = 1;
+    public float dragDuringDash = 10f;
+
+    //private int facingDirection = 1; // 1 = right, -1 = left
+    public bool canDash = true;
+    private bool isDashing = false;
+    private float originalDrag;
+
+    [Header("TrackedPlayerStats")]
+    static public int jumpsUsed;
+    static public int dashesUsed;
+
+
+    public enum PlayerState
+    {
+        Normal,
+        Dashing,
+        Fast,
+        Stunned
+        
+    }
+    public PlayerState playerState;
+
     private void Awake()
     {
+        playerState = PlayerState.Normal;
         noMoreJumpAnim.enabled = false;
         jumps = numberOfJumps;
 
-        RB = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         buildIndex = SceneManager.GetActiveScene().buildIndex;
+        originalDrag = rb.linearDamping;
     }
 
     void Update()
     {
-        playerMovement();
+        if (isDashing != true)
+        PlayerControls();
+
+        CharacterFlip();
     }
 
-    private void playerMovement()
+    void FixedUpdate()
     {
+        switch (playerState)
+        {
+            case PlayerState.Normal:
+                currentSpeed = normalSpeed;
+                isInvincible = false;
+                break;
+            case PlayerState.Dashing:
+                isInvincible = true;
+                break;
+            case PlayerState.Fast:
+                currentSpeed = fastSpeed;
+                isInvincible = false;
+                break;
+        }
+    }
+
+    private void PlayerControls()
+    {
+        movementInput = Input.GetAxisRaw("Horizontal");
+
         //Horizontal Movement
-        RB.linearVelocity = new Vector2(Input.GetAxis("Horizontal") * Speed, RB.linearVelocity.y);
+        rb.linearVelocity = new Vector2(movementInput * currentSpeed, rb.linearVelocity.y);
 
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && jumps > 0)
         {
             jumps--;
-            RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
             //Play animation when out of jumps
             if (jumps <= 0 && !isGrounded())
@@ -57,13 +121,60 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        //Dashing
+        if (Input.GetKeyDown(dashKey) && canDash == true)
+        {
+            StartCoroutine(Dash());
+        }
+
         //Replenish jumps when on ground 
         if (isGrounded())
         {
             //Offset with - 1 because the boxcast will detect still on ground sometime after jumping
             jumps = numberOfJumps - 1;
         }
+
+        //Fast after dash
+        if (playerState == PlayerState.Fast && (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D)))
+        {
+            playerState = PlayerState.Normal;
+        }
     }
+
+    private void CharacterFlip()
+    {
+        if (facingRight && movementInput < 0f || !facingRight && movementInput > 0f)
+        {
+            Vector3 localScale = transform.localScale;
+            facingRight = !facingRight;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        playerState = PlayerState.Dashing;
+        dashesUsed++;
+
+        float initialGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        float dashDirection = facingRight ? 1f : -1f;
+        rb.linearVelocity = new Vector2(dashDirection * dashForce, 0f);
+        playerState = PlayerState.Fast;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        rb.gravityScale = initialGravity;
+        isDashing = false;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+        
+
+    }
+
     public bool isGrounded()
     {
         //Boxcast for detecting when player is on ground
@@ -81,15 +192,6 @@ public class PlayerMovement : MonoBehaviour
     {
         //Makes BoxCast visible in Unity Editor
         Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collider2D)
-    {
-        if (collider2D.gameObject.tag == "Exit")
-        {
-            //Loads next scene in buildIndex
-            SceneManager.LoadScene(buildIndex + 1);
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision2D)
