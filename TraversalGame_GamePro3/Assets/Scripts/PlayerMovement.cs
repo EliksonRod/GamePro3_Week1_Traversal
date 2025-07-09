@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumps;
     int buildIndex;
 
+    float backToNormalSpeedTimer = 0.1f;
+
     [Header("Direction")]
     private float movementInput;
     private bool facingRight = true;
@@ -135,9 +137,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Fast after dash
-        if (playerState == PlayerState.Fast && (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D)))
+        if (playerState == PlayerState.Fast)
         {
-            playerState = PlayerState.Normal;
+            if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            {
+                StartCoroutine(switchToNormal());
+                //playerState = PlayerState.Normal;
+            }
         }
     }
 
@@ -171,9 +177,17 @@ public class PlayerMovement : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
-        
-
     }
+
+    IEnumerator switchToNormal()
+    {
+        yield return new WaitForSeconds(backToNormalSpeedTimer);
+
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
+        {
+            playerState = PlayerState.Normal;
+        }
+    } 
 
     public bool isGrounded()
     {
