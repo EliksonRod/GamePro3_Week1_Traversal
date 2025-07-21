@@ -13,9 +13,9 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
 
     public float currentSpeed;
-    public float jumpForce = 10;
-    [SerializeField]float normalSpeed = 8.2f;
-    [SerializeField]float fastSpeed = 11.5f;
+    public float jumpForce = 15;
+    [SerializeField]float normalSpeed = 9f;//8.2f
+    [SerializeField]float fastSpeed = 12.25f;//11.5f
     bool isInvincible = false;
 
     public Vector2 boxSize;
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 movement;
 
-    public float numberOfJumps;
+    public float numberOfJumps = 2;
     private float jumps;
     int buildIndex;
 
@@ -39,9 +39,9 @@ public class PlayerMovement : MonoBehaviour
     public KeyCode dashKey = KeyCode.LeftShift;
 
     [Header("Dash Settings")]
-    public float dashForce = 70f;
-    public float dashDuration = 0.2f;
-    public float dashCooldown = 1f;
+    public float dashForce = 45f;
+    public float dashDuration = 0.15f;
+    public float dashCooldown = 0.9f;
     public int maxDashesPerJump = 1;
     public float dragDuringDash = 10f;
 

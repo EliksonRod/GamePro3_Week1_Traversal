@@ -24,8 +24,8 @@ public class turret : MonoBehaviour
 
         if (shootTimer <= 0)
         {
-            //FireWeapon();
-            Shoot1();
+            FireWeapon();
+            //Shoot1();
             shootTimer = Random.Range(timer, 90f);
         }
     }

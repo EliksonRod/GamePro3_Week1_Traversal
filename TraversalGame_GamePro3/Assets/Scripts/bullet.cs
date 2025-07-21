@@ -19,7 +19,7 @@ public class bullet : MonoBehaviour
         
         SetDestroyTime();
 
-        //InitializeBullet();
+        InitializeBullet();
     }
 
     void InitializeBullet()
@@ -50,6 +50,6 @@ public class bullet : MonoBehaviour
     void Update()
     {
         //transform.position += direction * speed * Time.deltaTime;
-        rb.linearVelocity = transform.right * speed;
+        //rb.linearVelocity = transform.right * speed;
     }
 }
